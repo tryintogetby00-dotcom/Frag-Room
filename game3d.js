@@ -170,8 +170,9 @@ import { PointerLockControls } from 'three/addons/controls/PointerLockControls.j
     addBuilding({x:-31,z:-29,w:23,d:18,h:8.5,style:'warehouse',name:'NORTHLINE DEPOT',door:7.4});
     addBuilding({x:30,z:-30,w:20,d:16,h:10,style:'brick',name:'MILLER AUTO',door:3.1});
     addBuilding({x:-30,z:29,w:19,d:16,h:8,style:'brick',name:'RIVER STREET REPAIR',door:3.2});
-    addBuilding({x:30,z:29,w:17,d:15,h:7,style:'shop',name:'CORNER MARKET',door:2.8});
-    for(const [x,z] of [[-31,-29],[30,-30],[-30,29],[30,29]])buildingInteriorLamp(x,z);
+    // Place the market in the north-center block; the southeast block stays a connected public green.
+    addBuilding({x:0,z:-30,w:15,d:15,h:7,style:'shop',name:'CORNER MARKET',door:2.8});
+    for(const [x,z] of [[-31,-29],[30,-30],[-30,29],[0,-30]])buildingInteriorLamp(x,z);
     // Loading yard: two shipping containers, pallets, dumpster, and a wide gate.
     box(world,-39,.03,-14,7,2.8,2.6,M.rust,true);for(let i=0;i<9;i++)box(world,-42+i*.75,1.45,-14,.07,2.7,2.62,M.darkMetal,false,false);
     box(world,-26,.03,-13,5.5,2.8,2.6,M.metal,true);for(let i=0;i<7;i++)box(world,-28+i*.65,1.45,-13,.055,2.7,2.62,M.darkMetal,false,false);
@@ -232,7 +233,7 @@ import { PointerLockControls } from 'three/addons/controls/PointerLockControls.j
     return baseTerrain(x,z);
   }
   function collides(x,z,r=.43,verticalOffset=0){if(Math.abs(x)>51||Math.abs(z)>51)return true;const feet=groundHeight(x,z)+verticalOffset;for(const c of solids){if(feet>c.maxY-.15)continue;const px=THREE.MathUtils.clamp(x,c.x-c.w/2,c.x+c.w/2),pz=THREE.MathUtils.clamp(z,c.z-c.d/2,c.z+c.d/2);if((x-px)**2+(z-pz)**2<r*r)return true;}return false;}
-  function auditEnvironment(){const points=[['player spawn',0,34],['bot spawn 1',-5,25],['bot spawn 2',5,25],['bot spawn 3',-6,16],['bot spawn 4',6,16],['warehouse doorway',-31,-20],['garage doorway',30,-22],['repair doorway',-30,37],['market doorway',30,36.5],['ramp',-31,-17.3],['south park entry',29,30]];const blocked=points.filter(([,x,z])=>collides(x,z,.32)).map(([name])=>name);const ramp=groundHeight(-31,-19.5)>1.1&&groundHeight(-31,-15.2)<.12;const result={districts:4,aiSpawns:4,majorColliders:solids.length,walkableRamp:ramp,blockedAccessPoints:blocked};if(blocked.length||!ramp)console.warn(`FRAG ROOM environment audit found an issue ${JSON.stringify(result)}`);else console.info('FRAG ROOM environment audit passed',result);return result;}
+  function auditEnvironment(){const points=[['player spawn',0,34],['bot spawn 1',-5,25],['bot spawn 2',5,25],['bot spawn 3',-6,16],['bot spawn 4',6,16],['warehouse doorway',-31,-18.7],['garage doorway',30,-20.5],['repair doorway',-30,38.2],['market doorway',0,-21.3],['ramp',-31,-17.3],['south park entry',29,30]];const blocked=points.filter(([,x,z])=>collides(x,z,.32)).map(([name])=>name);const ramp=groundHeight(-31,-19.5)>1.1&&groundHeight(-31,-15.2)<.12;const result={districts:4,aiSpawns:4,majorColliders:solids.length,walkableRamp:ramp,blockedAccessPoints:blocked};if(blocked.length||!ramp)console.warn(`FRAG ROOM environment audit found an issue ${JSON.stringify(result)}`);else console.info('FRAG ROOM environment audit passed',result);return result;}
   function tryMove(entity,dx,dz,r=.43,verticalOffset=0){const nx=entity.x+dx,nz=entity.z+dz;if(!collides(nx,entity.z,r,verticalOffset))entity.x=nx;if(!collides(entity.x,nz,r,verticalOffset))entity.z=nz;}
   function lineBlocked(a,b){const dx=b.x-a.x,dz=b.z-a.z,dist=Math.hypot(dx,dz),steps=Math.ceil(dist/.55);for(let i=1;i<steps;i++){const t=i/steps;if(collides(a.x+dx*t,a.z+dz*t,.12))return true;}return false;}
 
