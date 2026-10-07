@@ -1,0 +1,12 @@
+{
+  "name": "frag-room",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Room-code browser FPS with WebSocket multiplayer",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
